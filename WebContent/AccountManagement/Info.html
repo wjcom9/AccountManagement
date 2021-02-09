@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>个人信息页</title>
+  <link rel="stylesheet" href="layuimini/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="layuimini/css/public.css" media="all">
+    <link rel="stylesheet" href="layui-v2.5.7/layui/css/layui.css" type="text/css">
+    <script type="text/javascript" src="layui-v2.5.7/layui/layui.js" charset="utf-8"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">个人信息</div>
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item">
+        <dl class="layui-nav-child">
+          
+        </dl>
+      </li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+          贤心
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="">基本资料</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item"><a href="">退了</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">个人信息</a>
+        </li>
+        
+       
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+	  	<table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+	  	<br>
+	  	<br>
+	  	<br>
+	  	<br>
+	  	<table class="layui-hide" id="currentTableId2" lay-filter="currentTableFilter2" style="border: 120px"></table>
+	  
+	  </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © layui.com - 底部固定区域
+  </div>
+</div>
+<script src="../src/layui.js"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+       	var username = "1195830101";
+        table.render({
+            elem: '#currentTableId',
+            url: 'http://localhost:8080/System/infocontroller?username='+username+' &flag='+'查找用户',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+         
+               	{field:"username",title:"用户名",sort:true,width:150},
+  			  	{field:"password",title:"密码",width:150},
+  			  	{field:"name",title:"真实姓名",width:150},
+  			  	{field:"sex",title:"性别",sort:true,width:80,align:"center"},
+  			  	{field:"age",title:"年龄",sort:true,width:80,align:"center"},
+  			  	{field:"department",title:"部门",width:120,align:"center"},
+  			  	{field:"position",title:"职务",width:150,align:"center"},
+  			  	{field:"contact",title:"联系方式",width:150,align:"center"},
+  			  	{field:"permission",title:"权限",width:80,align:"center",sort:true,
+  			  		templet:function(status){
+  			  			if(status.permission=='-1')
+  			  			{return '<span style="color:red">-1</span>';}
+  			  			else 
+  			  			{
+  			  				return '<span style="color:green">'+status.permission+'</span>';
+  			  			}
+  			  		}},
+                
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: false,
+            skin: 'line',
+           	id: 'testReload'
+        });
+        
+     
+        table.render({
+            elem: '#currentTableId2',
+            method:'post',
+            url:'http://localhost:8080/Chou_Pi_Jiang/Attendance?status='+status,
+            toolbar: '#toolbarAttend',
+            totalRow: true, //开启合计行
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+  			  {field: 'username', title: '用户名', width:135, sort: true,unresize:true,totalRowText: '合计：',align:'center'}
+  			  ,{field: 'basic', title: '基本工资', width:90,unresize:true,align:'center',totalRow:true}
+  			  ,{field: 'overtime', title: '加班工资', width:120, sort: true,unresize:true,edit:'text',align:'center',totalRow:true}
+  			  ,{field: 'commission', title: '提成工资', width:120,unresize:true,totalRow:true,align:'center'} 
+  			  ,{field: 'bonus', title: '福利奖金', width: 120,unresize:true,align:'center',totalRow:true}
+   	     	  ,{field: 'vacate', title: '请假扣除', width: 120, sort: true,unresize:true,align:'center',totalRow:true}
+   	     	  ,{field: 'late', title: '迟到扣除', width: 120, sort: true,unresize:true,align:'center',totalRow:true}
+   	      	  ,{field: 'absenteeism', title: '旷工扣除', width: 120,unresize:true,align:'center',totalRow:true}
+   	  		  ,{field: 'leave_days', title: '请假天数', width: 120, sort: true,align:'center',totalRow:true}
+   	  	   	  ,{field: 'late_days', title: '迟到天数', width: 120, sort: true,align:'center',totalRow:true}
+   	  		  ,{field: 'absenteeism_days', title: '旷工天数', width: 120, sort: true,align:'center',totalRow:true}
+   	 		  ,{field: 'overtime_hours', title: '加班时长', width: 120, sort: true,align:'center',totalRow:true}
+   	 		  ,{field: 'actual', title: '实发工资', width: 120, sort: true,align:'center',totalRow:true}
+    		 ]],
+    		parseData:function(res){
+		    	return{
+		    		"code":0,//解析接口状态
+		    		"msg":res.message,//解析提示文本
+		    		"count":res.total,//解析数据长度
+		    		"data":res//解析数据列表
+		    	};
+    		},   
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+        
+        
+		
+       	$(document).on('click','#seach-btn',function(data){
+       		var seach = $("#yourUsername");
+       		var index = layer.open({
+                title: '查询',
+                type: 2,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: true,
+                area: ['100%', '100%'],
+                content: 'Show.html?username='+seach.val(),
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+            return false;
+     
+       	})
+       	
+        
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: 'Register.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: 'ModifyUser.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    console.log(obj.data.username);
+                    deleteInfo(obj.data.username);
+                    layer.close(index);
+                });
+            }
+            else if(obj.event ==='ban') {
+            	layer.confirm('真的要禁用吗', function (index) {
+                   
+                    console.log(obj.data.username);
+                    $.ajax({
+            			type : "post",
+            		    async : false,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            		    url : "http://localhost:8080/System/infocontroller",    //请求发送到UserServlet处
+            		    data : {
+            		    	"username":obj.data.username,
+            		    	"password":obj.data.password,
+            		    	"name":obj.data.name,
+            		    	"sex":obj.data.sex,
+            		    	"department":obj.data.department,
+            		    	"permission":-1,
+            		    	"position":obj.data.position,
+            		    	"contact":obj.data.contact,
+            		    	"age":obj.data.age,
+            		    	"flag":"更正信息"
+            		    },
+            		    dataType : "json",        //返回数据形式为json
+            		    success : function(result) {
+            		    	console.log("禁用成功");
+            		    	layer.msg("已禁用："+obj.data.username);
+            		    },
+            		    error : function(errorMsg) {
+            		        console.log("失败");
+            		        layer.msg("禁用失败");
+            		    }
+            		})	
+				     //getData();
+                    layer.close(index);
+                });
+            }
+        });
+	
+        function FindInfo(username) {
+        	alert("函数为"+username);
+        	$.ajax({
+				type : "post",
+			    async : false,            
+			    url : "http://localhost:8080/System/infocontroller",    
+			    data : {
+			    	"username":username
+			    },
+			    dataType : "json",       
+			    success : function(result) {
+			    	alert(result);
+			 
+			    },
+			    error : function(errorMsg) {
+			        console.log(errorMsg);
+			    }
+			})
+		}
+        
+        function deleteInfo(username){
+			console.log('删除')
+			$.ajax({
+				type : "post",
+			    async : false,            
+			    url : "http://localhost:8080/System/infocontroller",   
+			    data : {
+			    	"username":username,
+			    	"flag":"删除用户"
+			    	
+			    },
+			    dataType : "json",        
+			    success : function(result) {
+			    	console.log(result);
+			    	console.log("删除成功");
+			    },
+			    error : function(errorMsg) {
+			        console.log(errorMsg);
+			        console.log("删除失败");
+			    }
+			})
+		}
+        //function BanUser(username)
+        
+        table.on('edit(currentTableFilter)',function(obj){
+  		  console.log(obj);
+  		  var username1 = obj.data.username;
+  		  var password1 =obj.data.password;
+  		  var name1 =obj.data.name;
+  		  var sex1 =obj.data.sex;
+  		  var age1 =obj.data.age;
+  		  var department1 =obj.data.department;
+  		  var permission1 =obj.data.permission;
+  		  var position1 =obj.data.position;
+  		  var contact1 =obj.data.contact;
+  		  var value=obj.value;
+  		  var data =  obj.data;
+  		  var field = obj.field;  
+  		$.ajax({
+			type : "post",
+		    async : false,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+		    url : "http://localhost:8080/System/infocontroller",    //请求发送到UserServlet处
+		    data : {
+		    	"username":username1,
+		    	"password":password1,
+		    	"name":name1,
+		    	"sex":sex1,
+		    	"department":department1,
+		    	"permission":permission1,
+		    	"position":position1,
+		    	"contact":contact1,
+		    	"age":age1,
+		    	"flag":"更正信息"
+		    },
+		    dataType : "json",        //返回数据形式为json
+		    success : function(result) {
+		    	console.log("成功");
+		    	layer.msg("修改成功！");
+		    },
+		    error : function(errorMsg) {
+		        console.log("失败");
+		        layer.msg("修改失败！");
+		    }
+		})
+  	  });
+        
+    });
+</script>
+</body>
+</html>

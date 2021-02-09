@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<link rel="stylesheet" href="layui-v2.5.7/layui/css/layui.css" type="text/css">
+  	<script type="text/javascript" src="layui-v2.5.7/layui/layui.js" charset="utf-8"></script>
+</head>
+<body>
+	<form class="layui-form" action="" method="post">
+	<div class="layui-form-item">
+    	<label class="layui-form-label">用户名</label>
+    		<div class="layui-input-block">
+      		<input type="text" style="width: 250px;margin-bottom: 10px" name="username" id="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+    	</div>
+    	<label class="layui-form-label">密码</label>
+    		<div class="layui-input-block">
+      		<input type="text" style="width: 250px;margin-bottom: 10px"  name="password" id="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+    	</div>
+    		 <button class="layui-btn layui-btn-primary"  type="submit" lay-submit lay-filter="data-search-btn" id="seach-btn"><i class="layui-icon"></i> 搜 索</button>
+    		
+  	</div>
+	</form>
+	
+	
+<script type="text/javascript">
+
+
+layui.use(['form', 'table'], function (){
+	
+	var $ = layui.jquery;
+	var table = layui.table;
+	
+	$(document).on('click','#seach-btn',function(data){
+			window.location.href=Info.html;
+			//var username = $("#username");
+			//var password = $("#password");
+			/*
+			alert("XX");
+			$.getJSON("http://localhost:8080/System/infocontroller",{flag:"查找用户",username:"1195830101"},function(json){
+				alert("GG");
+				alert(json);
+			  	console.log(json);
+			});*/
+			/*
+			var username = $("#username");
+			var password = $("#password");
+			alert(username.val()+" "+password.val());
+			$.ajax({
+				type : "post",
+			          
+			    url : "http://localhost:8080/System/infocontroller", 
+			    data : {
+			    	"username":username,
+	 		    	"password":password,
+	 		    	"flag":"查找用户"
+			    },
+			    dataType : "json",        //返回数据形式为json
+			    success : function(result) {
+			    	console.log("成功");
+			    	layer.msg("修改成功！");
+			    	console.log(result.username);
+			    },
+			    error : function(errorMsg) {
+			        console.log("失败");
+			        layer.msg("修改失败！");
+			    }
+			})*/
+	   
+
+		})
+		
+	
+	function Login(){
+		var username = $("#username");
+		alert(username);
+		console.log('执行');
+		$.ajax({
+			type : "post",          
+		    url : "http://localhost:8080/System/infocontroller",   
+		    data : {
+		    	"username":username,
+		    	"flag":"查找用户"
+		    	
+		    },
+		    dataType : "json",        
+		    success : function(result) {
+		    	console.log(result);
+		    	
+		    },
+		    error : function(errorMsg) {
+		        console.log(errorMsg);
+		      
+		    }
+		})
+	}
+	
+	
+	
+})
+
+
+
+
+</script>
+</body>
+</html>

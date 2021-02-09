@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>浏览页</title>
+</head>
+  	<link rel="stylesheet" href="layuimini/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="layuimini/css/public.css" media="all">
+    <link rel="stylesheet" href="layui-v2.5.7/layui/css/layui.css" type="text/css">
+    <script type="text/javascript" src="layui-v2.5.7/layui/layui.js" charset="utf-8"></script>
+<body>
+<center><h1>搜索结果</h1></center>
+ <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+  <script type="text/html" id="currentTableBar">
+ 
+			<a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="ban">禁用</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+<script charset="utf-8">
+//JavaScript代码区域
+
+layui.use('element', function(){
+  var element = layui.element;
+  
+});
+
+
+layui.use('table', function(){
+		var $ = layui.jquery;
+	  	var table = layui.table;
+		C1=window.location.href.split("?")[1]; 
+		C2=C1.split("=")[1];
+		var username = C2;
+	
+	  	table.render({
+            elem: '#currentTableId',
+            url: 'http://localhost:8080/System/infocontroller?username='+username+' &flag='+'查找用户',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+               	{field:"username",title:"用户名",sort:true,width:150},
+  			  	{field:"password",title:"密码",width:150,edit:"text"},
+  			  	{field:"name",title:"真实姓名",width:150,edit:"text"},
+  			  	{field:"sex",title:"性别",sort:true,width:80,align:"center",edit:"text"},
+  			  	{field:"age",title:"年龄",sort:true,width:80,align:"center",edit:"text"},
+  			  	{field:"department",title:"部门",width:120,edit:"text",align:"center"},
+  			  	{field:"position",title:"职务",width:150,edit:"text",align:"center"},
+  			  	{field:"contact",title:"联系方式",width:150,align:"center",edit:"text"},
+  			  	{field:"permission",title:"权限",width:80,align:"center",edit:"text",sort:true,
+  			  		templet:function(status){
+  			  			if(status.permission=='-1')
+  			  			{return '<span style="color:red">-1</span>';}
+  			  			else 
+  			  			{
+  			  				return '<span style="color:green">'+status.permission+'</span>';
+  			  			}
+  			  		}},
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line',
+           	id: 'testReload'
+        });
+	 
+	  table.on('tool(currentTableFilter)', function (obj) {
+          var data = obj.data;
+          if (obj.event === 'edit') {
+
+              var index = layer.open({
+                  title: '编辑用户',
+                  type: 2,
+                  shade: 0.2,
+                  maxmin:true,
+                  shadeClose: true,
+                  area: ['100%', '100%'],
+                  content: 'ModifyUser.html',
+              });
+              $(window).on("resize", function () {
+                  layer.full(index);
+              });
+              return false;
+          } else if (obj.event === 'delete') {
+              layer.confirm('真的删除行么', function (index) {
+                  obj.del();
+                  console.log(obj.data.username);
+                  deleteInfo(obj.data.username);
+                  layer.close(index);
+              });
+          }
+          else if(obj.event ==='ban') {
+          	layer.confirm('真的要禁用吗', function (index) {
+                 
+                  console.log(obj.data.username);
+                  $.ajax({
+          			type : "post",
+          		    async : false,           
+          		    url : "http://localhost:8080/System/infocontroller",
+          		    data : {
+          		    	"username":obj.data.username,
+          		    	"password":obj.data.password,
+          		    	"name":obj.data.name,
+          		    	"sex":obj.data.sex,
+          		    	"department":obj.data.department,
+          		    	"permission":-1,
+          		    	"position":obj.data.position,
+          		    	"contact":obj.data.contact,
+          		    	"age":obj.data.age,
+          		    	"flag":"更正信息"
+          		    },
+          		    dataType : "json",       
+          		    success : function(result) {
+          		    	console.log("禁用成功");
+          		    	layer.msg("已禁用："+obj.data.username);
+          		    },
+          		    error : function(errorMsg) {
+          		        console.log("失败");
+          		        layer.msg("禁用失败");
+          		    }
+          		})	
+				     //getData();
+                  layer.close(index);
+              });
+          }
+      });
+	  
+	  function deleteInfo(username){
+			console.log('删除')
+			$.ajax({
+				type : "post",
+			    async : false,            
+			    url : "http://localhost:8080/System/infocontroller",
+			    data : {
+			    	"username":username,
+			    	"flag":"删除用户"
+			    },
+			    dataType : "json",     
+			    success : function(result) {
+			    	console.log(result);
+			    	
+			    },
+			    error : function(errorMsg) {
+			        console.log(errorMsg);
+			    }
+			})
+		};
+	  
+		 table.on('edit(currentTableFilter)',function(obj){
+	  		  console.log(obj);
+	  		  var username1 = obj.data.username;
+	  		  var password1 =obj.data.password;
+	  		  var name1 =obj.data.name;
+	  		  var sex1 =obj.data.sex;
+	  		  var age1 =obj.data.age;
+	  		  var department1 =obj.data.department;
+	  		  var permission1 =obj.data.permission;
+	  		  var position1 =obj.data.position;
+	  		  var contact1 =obj.data.contact;
+	  		  var value=obj.value;
+	  		  var data =  obj.data;
+	  		  var field = obj.field;  
+	  		$.ajax({
+				type : "post",
+			    async : false,           
+			    url : "http://localhost:8080/System/infocontroller", 
+			    data : {
+			    	"username":username1,
+			    	"password":password1,
+			    	"name":name1,
+			    	"sex":sex1,
+			    	"department":department1,
+			    	"permission":permission1,
+			    	"position":position1,
+			    	"contact":contact1,
+			    	"age":age1,
+			    	"flag":"更正信息"
+			    },
+			    dataType : "json",        //返回数据形式为json
+			    success : function(result) {
+			    	console.log("成功");
+			    	layer.msg("修改成功！");
+			    	console.log(result.username);
+			    },
+			    error : function(errorMsg) {
+			        console.log("失败");
+			        layer.msg("修改失败！");
+			    }
+			})
+	  	  });
+});
+</script>
+</body>
+</html>
